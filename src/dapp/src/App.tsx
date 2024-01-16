@@ -1,6 +1,4 @@
 import { ConnectKitButton } from 'connectkit';
-import { useState } from 'react';
-import * as React from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -12,23 +10,19 @@ import TablePagination from '@mui/material/TablePagination';
 import Switch from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import CreateTransactionModal from './CreateTransactionModal';
+import AdsModal from './AdsModal';
 import { signPermit } from './gho';
 import Box from '@mui/material/Box';
 import { useSigner, useAccount } from 'wagmi';
-
-interface Transaction {
-  sender: string;
-  receiver: string;
-  amount: number;
-  created: string;
-  updated: string;
-  status: string;
-}
+import { getTransactions, Transaction, TransactionRequest } from './utils';
+import React, { useState, useEffect } from 'react';
 
 function App() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [transactions, setTransactions] = useState<TransactionRequest[]>([]);
+
   const handleOpenModal = () => {
     setIsModalOpen(true);
   };
@@ -53,37 +47,35 @@ function App() {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
-
-  const [filter, setFilter] = useState('Me'); 
+  const [isAdsModalOpen, setIsAdsModalOpen] = useState(false);
+  const [id, setId] = useState(0);
+  const [videoUrl, setVideoUrl] = useState('');
+  const [filter, setFilter] = useState('Everyone'); 
   const toggleFilter = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFilter(event.target.checked ? 'Everyone' : 'Me');
   };
-  const greenColor = '#22c55e'; 
-  const transactions: Transaction[] = [
-    { sender: '0xSender', receiver: '0xReceiver', amount: 10, created: 'YYYY-MM-DD', updated: 'YYYY-MM-DD', status: 'Success' },
-    { sender: '0xSender', receiver: '0xReceiver', amount: 10, created: 'YYYY-MM-DD', updated: 'YYYY-MM-DD', status: 'Success' },
-    { sender: '0xSender', receiver: '0xReceiver', amount: 10, created: 'YYYY-MM-DD', updated: 'YYYY-MM-DD', status: 'Success' },
-    { sender: '0xSender', receiver: '0xReceiver', amount: 10, created: 'YYYY-MM-DD', updated: 'YYYY-MM-DD', status: 'Success' },
-    { sender: '0xSender', receiver: '0xReceiver', amount: 10, created: 'YYYY-MM-DD', updated: 'YYYY-MM-DD', status: 'Success' },
-    { sender: '0xSender', receiver: '0xReceiver', amount: 10, created: 'YYYY-MM-DD', updated: 'YYYY-MM-DD', status: 'Success' },
-    { sender: '0xSender', receiver: '0xReceiver', amount: 10, created: 'YYYY-MM-DD', updated: 'YYYY-MM-DD', status: 'Success' },
-    { sender: '0xSender', receiver: '0xReceiver', amount: 10, created: 'YYYY-MM-DD', updated: 'YYYY-MM-DD', status: 'Success' },
-    { sender: '0xSender', receiver: '0xReceiver', amount: 10, created: 'YYYY-MM-DD', updated: 'YYYY-MM-DD', status: 'Success' },
-    { sender: '0xSender', receiver: '0xReceiver', amount: 10, created: 'YYYY-MM-DD', updated: 'YYYY-MM-DD', status: 'Success' },
-    { sender: '0xSender', receiver: '0xReceiver', amount: 10, created: 'YYYY-MM-DD', updated: 'YYYY-MM-DD', status: 'Success' },
-    { sender: '0xSender', receiver: '0xReceiver', amount: 10, created: 'YYYY-MM-DD', updated: 'YYYY-MM-DD', status: 'Success' },
-    { sender: '0xSender', receiver: '0xReceiver', amount: 10, created: 'YYYY-MM-DD', updated: 'YYYY-MM-DD', status: 'Success' },
-    { sender: '0xSender', receiver: '0xReceiver', amount: 10, created: 'YYYY-MM-DD', updated: 'YYYY-MM-DD', status: 'Success' },
-    { sender: '0xSender', receiver: '0xReceiver', amount: 10, created: 'YYYY-MM-DD', updated: 'YYYY-MM-DD', status: 'Success' },
-    { sender: '0xSender', receiver: '0xReceiver', amount: 10, created: 'YYYY-MM-DD', updated: 'YYYY-MM-DD', status: 'Success' },
-    { sender: '0xSender', receiver: '0xReceiver', amount: 10, created: 'YYYY-MM-DD', updated: 'YYYY-MM-DD', status: 'Success' },
-    { sender: '0xSender', receiver: '0xReceiver', amount: 10, created: 'YYYY-MM-DD', updated: 'YYYY-MM-DD', status: 'Success' },
-    { sender: '0xSender', receiver: '0xReceiver', amount: 10, created: 'YYYY-MM-DD', updated: 'YYYY-MM-DD', status: 'Success' },
-    { sender: '0xSender', receiver: '0xReceiver', amount: 10, created: 'YYYY-MM-DD', updated: 'YYYY-MM-DD', status: 'Success' },
-    { sender: '0xSender', receiver: '0xReceiver', amount: 10, created: 'YYYY-MM-DD', updated: 'YYYY-MM-DD', status: 'Success' },
-  ];
+  const greenColor = '#22c55e';
   const { address, isConnecting, isDisconnected } = useAccount();
   const { data: signer } = useSigner();
+
+  const handleOpenAdsModal = (url: string, id: number) => {
+    setVideoUrl(url);
+    setId(id);
+    setIsAdsModalOpen(true);
+  };
+
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      try {
+        const fetchedTransactions = await getTransactions();
+        setTransactions(fetchedTransactions);
+      } catch (error) {
+        console.error("Error fetching transactions:", error);
+      }
+    };
+
+    fetchTransactions();
+  }, []);
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-r from-darkStart to-darkEnd text-white">
@@ -137,6 +129,7 @@ function App() {
                   sx={{ color: 'white', '.MuiFormControlLabel-label': { color: 'white' } }}
                 />
               </div>
+              <AdsModal open={isAdsModalOpen} handleClose={() => setIsAdsModalOpen(false)} videoUrl={videoUrl} id={id}/>
               <CreateTransactionModal open={isModalOpen} handleClose={handleCloseModal} handleSubmit={handleSubmit} address={address} />
                 <TableContainer component={Paper}  sx={{ backgroundColor: 'transparent'}}>
                   <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -169,12 +162,26 @@ function App() {
                                         alt="Aave Logo" 
                                         style={{ marginRight: '10px', width: '24px' }} // Adjusted width
                                     />
-                                    {tx.amount} Aave
+                                    {parseFloat(tx.amount) / 1000000000000000000} Aave
                                 </Box>
                           </TableCell>
                           <TableCell sx={{ color: 'white' }} align="right">{tx.created}</TableCell>
-                          <TableCell sx={{ color: 'white' }} align="right">{tx.updated}</TableCell>
-                          <TableCell sx={{ color: 'white' }} align="right">{tx.status}</TableCell>
+                          <TableCell sx={{ color: 'white' }} align="right">{tx.executed}</TableCell>
+                          <TableCell sx={{ color: 'white' }} align="right">
+                            {tx.status === 'Pending' ? (
+                              <>
+                              <button
+                                style={{color: 'white', padding: '10px', borderRadius: '5px'}}
+                                className='bg-customRed'
+                                onClick={() => handleOpenAdsModal('https://cloudflare-ipfs.com/ipfs/QmfGkE2Za9ZXsVzNjF8wVqZGAo3k6gjnxVtkjNc4QmWNuS', tx.id as number)}
+                              >
+                                View Ads
+                              </button>
+                              </>
+                            ) : (
+                              tx.status
+                            )}
+                          </TableCell>
                         </TableRow>
                       ))}
                     </TableBody>

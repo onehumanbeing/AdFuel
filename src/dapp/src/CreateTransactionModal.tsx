@@ -8,8 +8,8 @@ import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
-import { Transaction } from './utils'; 
 import { getGHOBalance } from './gho';
+import { Transaction } from './utils';
 
 const style = {
     position: 'absolute' as 'absolute',
@@ -27,7 +27,7 @@ const style = {
 interface CreateTransactionModalProps {
     open: boolean;
     handleClose: () => void;
-    handleSubmit: (transaction: Transaction) => void; // 表单提交时的处理函数
+    handleSubmit: (transaction: Transaction) => void; 
     address: string | undefined
 }
 
@@ -61,7 +61,7 @@ const CreateTransactionModal: React.FC<CreateTransactionModalProps> = ({
         receiver: '0xe5107dee9CcC8054210FF6129cE15Eaa5bbcB1c0',
         amount: 0.1,
         created: '',
-        updated: '',
+        executed: '',
         status: '',
     });
     const [assetType, setAssetType] = React.useState('Aave');
