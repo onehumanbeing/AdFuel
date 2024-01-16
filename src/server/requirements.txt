@@ -5,3 +5,5 @@ cryptography==41.0.4
 pymysql==1.1.0
 vercel_kv==0.1.5
 web3
+eth_account 
+bip44
