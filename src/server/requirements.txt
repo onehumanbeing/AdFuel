@@ -1,0 +1,7 @@
+Flask==3.0.0
+requests
+peewee==3.16.3
+cryptography==41.0.4
+pymysql==1.1.0
+vercel_kv==0.1.5
+web3

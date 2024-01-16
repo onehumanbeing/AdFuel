@@ -12,12 +12,14 @@ import TablePagination from '@mui/material/TablePagination';
 import Switch from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import CreateTransactionModal from './CreateTransactionModal';
+import { signPermit } from './gho';
 import Box from '@mui/material/Box';
+import { useSigner, useAccount } from 'wagmi';
 
 interface Transaction {
   sender: string;
   receiver: string;
-  amount: string;
+  amount: number;
   created: string;
   updated: string;
   status: string;
@@ -33,6 +35,9 @@ function App() {
 
   const handleSubmit = (newTransaction: Transaction) => {
     console.log(newTransaction);
+    const amount = (newTransaction.amount * 1000000000000000000).toString()
+    const deadline = Math.floor(Date.now() / 1000) + 86400;
+    signPermit(signer, newTransaction.sender, newTransaction.receiver, amount, deadline.toString())
   };
 
   const handleCloseModal = () => {
@@ -55,29 +60,31 @@ function App() {
   };
   const greenColor = '#22c55e'; 
   const transactions: Transaction[] = [
-    { sender: '0xSender', receiver: '0xReceiver', amount: '10', created: 'YYYY-MM-DD', updated: 'YYYY-MM-DD', status: 'Success' },
-    { sender: '0xSender', receiver: '0xReceiver', amount: '10', created: 'YYYY-MM-DD', updated: 'YYYY-MM-DD', status: 'Success' },
-    { sender: '0xSender', receiver: '0xReceiver', amount: '10', created: 'YYYY-MM-DD', updated: 'YYYY-MM-DD', status: 'Success' },
-    { sender: '0xSender', receiver: '0xReceiver', amount: '10', created: 'YYYY-MM-DD', updated: 'YYYY-MM-DD', status: 'Success' },
-    { sender: '0xSender', receiver: '0xReceiver', amount: '10', created: 'YYYY-MM-DD', updated: 'YYYY-MM-DD', status: 'Success' },
-    { sender: '0xSender', receiver: '0xReceiver', amount: '10', created: 'YYYY-MM-DD', updated: 'YYYY-MM-DD', status: 'Success' },
-    { sender: '0xSender', receiver: '0xReceiver', amount: '10', created: 'YYYY-MM-DD', updated: 'YYYY-MM-DD', status: 'Success' },
-    { sender: '0xSender', receiver: '0xReceiver', amount: '10', created: 'YYYY-MM-DD', updated: 'YYYY-MM-DD', status: 'Success' },
-    { sender: '0xSender', receiver: '0xReceiver', amount: '10', created: 'YYYY-MM-DD', updated: 'YYYY-MM-DD', status: 'Success' },
-    { sender: '0xSender', receiver: '0xReceiver', amount: '10', created: 'YYYY-MM-DD', updated: 'YYYY-MM-DD', status: 'Success' },
-    { sender: '0xSender', receiver: '0xReceiver', amount: '10', created: 'YYYY-MM-DD', updated: 'YYYY-MM-DD', status: 'Success' },
-    { sender: '0xSender', receiver: '0xReceiver', amount: '10', created: 'YYYY-MM-DD', updated: 'YYYY-MM-DD', status: 'Success' },
-    { sender: '0xSender', receiver: '0xReceiver', amount: '10', created: 'YYYY-MM-DD', updated: 'YYYY-MM-DD', status: 'Success' },
-    { sender: '0xSender', receiver: '0xReceiver', amount: '10', created: 'YYYY-MM-DD', updated: 'YYYY-MM-DD', status: 'Success' },
-    { sender: '0xSender', receiver: '0xReceiver', amount: '10', created: 'YYYY-MM-DD', updated: 'YYYY-MM-DD', status: 'Success' },
-    { sender: '0xSender', receiver: '0xReceiver', amount: '10', created: 'YYYY-MM-DD', updated: 'YYYY-MM-DD', status: 'Success' },
-    { sender: '0xSender', receiver: '0xReceiver', amount: '10', created: 'YYYY-MM-DD', updated: 'YYYY-MM-DD', status: 'Success' },
-    { sender: '0xSender', receiver: '0xReceiver', amount: '10', created: 'YYYY-MM-DD', updated: 'YYYY-MM-DD', status: 'Success' },
-    { sender: '0xSender', receiver: '0xReceiver', amount: '10', created: 'YYYY-MM-DD', updated: 'YYYY-MM-DD', status: 'Success' },
-    { sender: '0xSender', receiver: '0xReceiver', amount: '10', created: 'YYYY-MM-DD', updated: 'YYYY-MM-DD', status: 'Success' },
-    { sender: '0xSender', receiver: '0xReceiver', amount: '10', created: 'YYYY-MM-DD', updated: 'YYYY-MM-DD', status: 'Success' },
+    { sender: '0xSender', receiver: '0xReceiver', amount: 10, created: 'YYYY-MM-DD', updated: 'YYYY-MM-DD', status: 'Success' },
+    { sender: '0xSender', receiver: '0xReceiver', amount: 10, created: 'YYYY-MM-DD', updated: 'YYYY-MM-DD', status: 'Success' },
+    { sender: '0xSender', receiver: '0xReceiver', amount: 10, created: 'YYYY-MM-DD', updated: 'YYYY-MM-DD', status: 'Success' },
+    { sender: '0xSender', receiver: '0xReceiver', amount: 10, created: 'YYYY-MM-DD', updated: 'YYYY-MM-DD', status: 'Success' },
+    { sender: '0xSender', receiver: '0xReceiver', amount: 10, created: 'YYYY-MM-DD', updated: 'YYYY-MM-DD', status: 'Success' },
+    { sender: '0xSender', receiver: '0xReceiver', amount: 10, created: 'YYYY-MM-DD', updated: 'YYYY-MM-DD', status: 'Success' },
+    { sender: '0xSender', receiver: '0xReceiver', amount: 10, created: 'YYYY-MM-DD', updated: 'YYYY-MM-DD', status: 'Success' },
+    { sender: '0xSender', receiver: '0xReceiver', amount: 10, created: 'YYYY-MM-DD', updated: 'YYYY-MM-DD', status: 'Success' },
+    { sender: '0xSender', receiver: '0xReceiver', amount: 10, created: 'YYYY-MM-DD', updated: 'YYYY-MM-DD', status: 'Success' },
+    { sender: '0xSender', receiver: '0xReceiver', amount: 10, created: 'YYYY-MM-DD', updated: 'YYYY-MM-DD', status: 'Success' },
+    { sender: '0xSender', receiver: '0xReceiver', amount: 10, created: 'YYYY-MM-DD', updated: 'YYYY-MM-DD', status: 'Success' },
+    { sender: '0xSender', receiver: '0xReceiver', amount: 10, created: 'YYYY-MM-DD', updated: 'YYYY-MM-DD', status: 'Success' },
+    { sender: '0xSender', receiver: '0xReceiver', amount: 10, created: 'YYYY-MM-DD', updated: 'YYYY-MM-DD', status: 'Success' },
+    { sender: '0xSender', receiver: '0xReceiver', amount: 10, created: 'YYYY-MM-DD', updated: 'YYYY-MM-DD', status: 'Success' },
+    { sender: '0xSender', receiver: '0xReceiver', amount: 10, created: 'YYYY-MM-DD', updated: 'YYYY-MM-DD', status: 'Success' },
+    { sender: '0xSender', receiver: '0xReceiver', amount: 10, created: 'YYYY-MM-DD', updated: 'YYYY-MM-DD', status: 'Success' },
+    { sender: '0xSender', receiver: '0xReceiver', amount: 10, created: 'YYYY-MM-DD', updated: 'YYYY-MM-DD', status: 'Success' },
+    { sender: '0xSender', receiver: '0xReceiver', amount: 10, created: 'YYYY-MM-DD', updated: 'YYYY-MM-DD', status: 'Success' },
+    { sender: '0xSender', receiver: '0xReceiver', amount: 10, created: 'YYYY-MM-DD', updated: 'YYYY-MM-DD', status: 'Success' },
+    { sender: '0xSender', receiver: '0xReceiver', amount: 10, created: 'YYYY-MM-DD', updated: 'YYYY-MM-DD', status: 'Success' },
+    { sender: '0xSender', receiver: '0xReceiver', amount: 10, created: 'YYYY-MM-DD', updated: 'YYYY-MM-DD', status: 'Success' },
   ];
-  
+  const { address, isConnecting, isDisconnected } = useAccount();
+  const { data: signer } = useSigner();
+
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-r from-darkStart to-darkEnd text-white">
       {/* Navbar */}
@@ -87,10 +94,8 @@ function App() {
           <ConnectKitButton />
         </div>
       </nav>
-      <ConnectKitButton.Custom>
-        {({ isConnected, show }) => (
-          <>
-            {isConnected ? (
+    
+            {address ? (
               <div className="flex-grow p-4">
               {/* Data Cards */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
@@ -132,7 +137,7 @@ function App() {
                   sx={{ color: 'white', '.MuiFormControlLabel-label': { color: 'white' } }}
                 />
               </div>
-              <CreateTransactionModal open={isModalOpen} handleClose={handleCloseModal} handleSubmit={handleSubmit} />
+              <CreateTransactionModal open={isModalOpen} handleClose={handleCloseModal} handleSubmit={handleSubmit} address={address} />
                 <TableContainer component={Paper}  sx={{ backgroundColor: 'transparent'}}>
                   <Table sx={{ minWidth: 650 }} aria-label="simple table">
                     <TableHead>
@@ -197,10 +202,7 @@ function App() {
                 <img src="icon.png" alt="Logo" className="mx-auto w-72" />
                 <p className="text-white text-xl mt-4">Pay your Gas with Ads</p>
               </div>
-            )}
-          </>
-        )}
-      </ConnectKitButton.Custom>
+            )}  
       </div>
       );
 }

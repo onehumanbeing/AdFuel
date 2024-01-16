@@ -1,7 +1,7 @@
 export interface Transaction {
     sender: string;
     receiver: string;
-    amount: string;
+    amount: number;
     created: string;
     updated: string;
     status: string;

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import Typography from '@mui/material/Typography';
@@ -9,6 +9,7 @@ import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import { Transaction } from './utils'; 
+import { getGHOBalance } from './gho';
 
 const style = {
     position: 'absolute' as 'absolute',
@@ -22,23 +23,43 @@ const style = {
     boxShadow: 24,
     p: 4,
 };
-const MAX_AMOUNT = 0;
+
 interface CreateTransactionModalProps {
     open: boolean;
     handleClose: () => void;
     handleSubmit: (transaction: Transaction) => void; // 表单提交时的处理函数
+    address: string | undefined
 }
 
 const CreateTransactionModal: React.FC<CreateTransactionModalProps> = ({
     open,
     handleClose,
     handleSubmit,
+    address
 }) => {
-    // 使用本地状态来存储表单输入
+    const [maxAmount, setMaxAmount] = useState(0);
+
+    useEffect(() => {
+        const fetchBalance = async () => {
+            if(!address) {
+                return;
+            }
+            try {
+                const balance = await getGHOBalance(address as string);
+                setMaxAmount(balance / 1000000000000000000);
+            } catch (error) {
+                console.error("Error fetching balance:", error);
+            }
+        };
+        if (address) {
+            fetchBalance();
+        }
+    }, [address]);    
+    
     const [transactionData, setTransactionData] = React.useState<Transaction>({
-        sender: '',
+        sender: address as string,
         receiver: '0xe5107dee9CcC8054210FF6129cE15Eaa5bbcB1c0',
-        amount: '',
+        amount: 0.1,
         created: '',
         updated: '',
         status: '',
@@ -118,7 +139,7 @@ const CreateTransactionModal: React.FC<CreateTransactionModalProps> = ({
                         value={transactionData.amount}
                         onChange={handleChange}
                         sx={{ input: { color: 'white' }, label: { color: 'white' } }}
-                        helperText={`Available: ${MAX_AMOUNT}`} 
+                        helperText={`Available: ${maxAmount}`} 
                         FormHelperTextProps={{
                             style: { color: 'white' },
                         }}
