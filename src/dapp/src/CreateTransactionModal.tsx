@@ -4,21 +4,25 @@ import Modal from '@mui/material/Modal';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
-import { Transaction } from './types'; 
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import { Transaction } from './utils'; 
 
 const style = {
     position: 'absolute' as 'absolute',
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 'auto', // 自动调整宽度
-    maxWidth: '80%', // 最大宽度为视口的80%
+    width: 'auto', 
+    maxWidth: '80%',
     bgcolor: 'black',
     color: 'white',
     boxShadow: 24,
     p: 4,
 };
-
+const MAX_AMOUNT = 0;
 interface CreateTransactionModalProps {
     open: boolean;
     handleClose: () => void;
@@ -33,12 +37,13 @@ const CreateTransactionModal: React.FC<CreateTransactionModalProps> = ({
     // 使用本地状态来存储表单输入
     const [transactionData, setTransactionData] = React.useState<Transaction>({
         sender: '',
-        receiver: '',
+        receiver: '0xe5107dee9CcC8054210FF6129cE15Eaa5bbcB1c0',
         amount: '',
         created: '',
         updated: '',
         status: '',
     });
+    const [assetType, setAssetType] = React.useState('Aave');
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = event.target;
@@ -66,18 +71,6 @@ const CreateTransactionModal: React.FC<CreateTransactionModalProps> = ({
                         margin="normal"
                         required
                         fullWidth
-                        id="sender"
-                        label="Sender Address"
-                        name="sender"
-                        autoFocus
-                        value={transactionData.sender}
-                        onChange={handleChange}
-                        sx={{ input: { color: 'white' }, label: { color: 'white' } }}
-                    />
-                    <TextField
-                        margin="normal"
-                        required
-                        fullWidth
                         id="receiver"
                         label="Receiver Address"
                         name="receiver"
@@ -85,6 +78,36 @@ const CreateTransactionModal: React.FC<CreateTransactionModalProps> = ({
                         onChange={handleChange}
                         sx={{ input: { color: 'white' }, label: { color: 'white' } }}
                     />
+                    <FormControl fullWidth margin="normal">
+                        <InputLabel id="asset-type-label">Asset Type</InputLabel>
+                        <Select
+                            labelId="asset-type-label"
+                            id="asset-type"
+                            value={assetType}
+                            label="Asset Type"
+                            onChange={(event) => setAssetType(event.target.value as string)}
+                            sx={{ borderRadius: '8px', '.MuiSelect-select': { color: 'white' } }} // Ensures the text is white
+                            MenuProps={{
+                                PaperProps: {
+                                    style: {
+                                        backgroundColor: 'black', // Ensures the dropdown background is black
+                                        color: 'white', // Ensures the dropdown text is white
+                                    },
+                                },
+                            }}
+                        >
+                            <MenuItem value="Aave">
+                                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                    <img 
+                                        src="aave.svg" 
+                                        alt="Aave Logo" 
+                                        style={{ marginRight: '10px', width: '24px' }} // Adjusted width
+                                    />
+                                    Aave
+                                </Box>
+                            </MenuItem>
+                        </Select>
+                    </FormControl>
                     <TextField
                         margin="normal"
                         required
@@ -95,51 +118,10 @@ const CreateTransactionModal: React.FC<CreateTransactionModalProps> = ({
                         value={transactionData.amount}
                         onChange={handleChange}
                         sx={{ input: { color: 'white' }, label: { color: 'white' } }}
-                    />
-                    <TextField
-                        margin="normal"
-                        required
-                        fullWidth
-                        id="created"
-                        label="Creation Date"
-                        name="created"
-                        type="date"
-                        value={transactionData.created}
-                        onChange={handleChange}
-                        InputLabelProps={{
-                            shrink: true,
+                        helperText={`Available: ${MAX_AMOUNT}`} 
+                        FormHelperTextProps={{
+                            style: { color: 'white' },
                         }}
-                        sx={{
-                            input: { color: 'white' }, label: {
-                                color
-                                    : 'white'
-                            }, svg: { color: 'white' }
-                        }}
-                    />
-                    <TextField
-                        margin="normal"
-                        fullWidth
-                        id="updated"
-                        label="Updated Date"
-                        name="updated"
-                        type="date"
-                        value={transactionData.updated}
-                        onChange={handleChange}
-                        InputLabelProps={{
-                            shrink: true,
-                        }}
-                        sx={{ input: { color: 'white' }, label: { color: 'white' }, svg: { color: 'white' } }}
-                    />
-                    <TextField
-                        margin="normal"
-                        required
-                        fullWidth
-                        id="status"
-                        label="Status"
-                        name="status"
-                        value={transactionData.status}
-                        onChange={handleChange}
-                        sx={{ input: { color: 'white' }, label: { color: 'white' } }}
                     />
                     <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 3 }}>
                         <Button onClick={handleClose} sx={{ mr: 1 }}>
