@@ -206,7 +206,7 @@ function App() {
                                 </a>
                               ) : tx.status === 'Permit' ? (
                                 <a 
-                                  onClick={() => handlePermit(id)}
+                                  onClick={() => handlePermit(tx.id as number)}
                                   target="_blank" 
                                   rel="noopener noreferrer" 
                                   style={{ color: 'white', textDecoration: 'underline' }}
@@ -243,6 +243,11 @@ function App() {
               <div className="text-center">
                 <img src="icon.png" alt="Logo" className="mx-auto w-72" />
                 <p className="text-white text-xl mt-4">Pay your Gas with Ads</p>
+                <div className="flex justify-center space-x-4 mt-10">
+                  <a style={{ color: 'white', textDecoration: 'underline' }}  href="https://staging.aave.com/faucet/" className="text-white hover:underline">AAVE Faucet</a>
+                  <a style={{ color: 'white', textDecoration: 'underline' }}  href="https://faucet.quicknode.com/ethereum/sepolia" className="text-white hover:underline">Sepolia Faucet</a>
+                  <a style={{ color: 'white', textDecoration: 'underline' }} href="https://twitter.com/0xhenryht" className="text-white hover:underline">Contact Us</a>
+              </div>
               </div>
             )}  
       </div>
