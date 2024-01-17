@@ -32,6 +32,12 @@ function App() {
     const amount = (newTransaction.amount * 1000000000000000000).toString()
     const deadline = Math.floor(Date.now() / 1000) + 86400;
     signPermit(signer, newTransaction.sender, newTransaction.receiver, amount, deadline.toString())
+        .then(() => {
+          window.location.reload();
+        })
+        .catch((error) => {
+          console.error("Error occurred:", error);
+        });  
   };
 
   const handleCloseModal = () => {

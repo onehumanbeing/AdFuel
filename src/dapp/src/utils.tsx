@@ -15,7 +15,10 @@ export type TransactionRequest = {
   status: string;
   created?: string; // This field is auto-generated, so it's optional when creating a TransactionRequest
   executed?: string;
+  value?: string;
   id?: number;
+  extra?: string;
+  deadline?: string;
 };
 
 // API base URL
