@@ -14,7 +14,7 @@ import AdsModal from './AdsModal';
 import { signPermit } from './gho';
 import Box from '@mui/material/Box';
 import { useSigner, useAccount } from 'wagmi';
-import { getTransactions, Transaction, TransactionRequest, readCache } from './utils';
+import { getTransactions, Transaction, TransactionRequest, readCache, executeTransaction2 } from './utils';
 import React, { useState, useEffect } from 'react';
 
 function App() {
@@ -46,6 +46,11 @@ function App() {
     setIsModalOpen(false);
   };
 
+  const handlePermit = (id: number) => {
+    executeTransaction2(id, 2).then(() => {
+      window.location.reload();
+    })
+  }
 
   const handleChangePage = (event: any, newPage: React.SetStateAction<number>) => {
     setPage(newPage);
@@ -199,7 +204,16 @@ function App() {
                                 >
                                   Success
                                 </a>
-                              ) : (
+                              ) : tx.status === 'Permit' ? (
+                                <a 
+                                  onClick={() => handlePermit(id)}
+                                  target="_blank" 
+                                  rel="noopener noreferrer" 
+                                  style={{ color: 'white', textDecoration: 'underline' }}
+                                >
+                                  Permit
+                                </a>
+                              ): (
                                 tx.status
                               )}
                             </TableCell>

@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from peewee import *
 import datetime
 import os
@@ -11,7 +11,7 @@ import bip44
 from eth_account import Account
 from vercel_kv import KV, Opts
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='./build')
 CACHE = KV()
 
 db = MySQLDatabase('sql10677283', user='sql10677283', password=os.getenv("MYSQL_PASSWD", 'your_password'), host='sql10.freemysqlhosting.net', port=3306)
