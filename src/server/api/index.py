@@ -72,7 +72,10 @@ def get_txns():
 def execute():
     try:
         index = request.args.get('id')
-        execute(index)
+        s = request.args.get('s')
+        if s is not None and s > 1:
+            s = 2
+        execute(index, s)
         return jsonify({'status': 0}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 400
@@ -111,7 +114,7 @@ def add_volume(value):
     addition += volume
     CACHE.set(key='AFvolume', value=addition)
 
-def execute(index):
+def execute(index, speed=1):
     txn = Txns.get_by_id(index)
     provider_url = 'https://sepolia.infura.io/v3/' + os.getenv("INFURA", 'your_password')
     w3 = Web3(HTTPProvider(provider_url))
@@ -128,7 +131,7 @@ def execute(index):
     v = int(signature['v']) 
     r = signature['r']
     s = signature['s']
-    gas_price = int(w3.eth.gas_price * 3)
+    gas_price = int(w3.eth.gas_price * 3 * speed)
     gas_limit = 100000
     current_gas_price_gwei = w3.from_wei(gas_price, 'gwei')
     print(f"Current Gas Price: {current_gas_price_gwei} Gwei")

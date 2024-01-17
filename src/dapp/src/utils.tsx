@@ -24,9 +24,9 @@ export type TransactionRequest = {
 // API base URL
 const API_URL = 'https://ad-fuel.vercel.app';
 
-export const executeTransaction = async (id: number): Promise<void> => {
+export const executeTransaction = async (id: number, speed: number): Promise<void> => {
   try {
-      const response = await fetch(`${API_URL}/execute?id=${id}`);
+      const response = await fetch(`${API_URL}/execute?id=${id}&s=${speed}`);
       if (!response.ok) {
           throw new Error('Network response was not ok');
       }

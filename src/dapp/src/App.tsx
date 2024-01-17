@@ -80,7 +80,7 @@ function App() {
         const v = await readCache('v');
         setVolume(v);
         const g = await readCache('g');
-        setGasBurnt(g);
+        setGasBurnt(g / 1000000000000000000);
       } catch (error) {
         console.error("Error fetching transactions:", error);
       }

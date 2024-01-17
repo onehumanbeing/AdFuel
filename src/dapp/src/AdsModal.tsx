@@ -47,6 +47,7 @@ const AdsModal: React.FC<AdsModalProps> = ({ open, handleClose, videoUrl, id }) 
   const [timer, setTimer] = useState(3); // Countdown from 3 seconds
   const [showCountdown, setShowCountdown] = useState(false);
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
+  const [speed, setSpeed] = useState(1);
 
   useEffect(() => {
     let countdown: NodeJS.Timeout;
@@ -54,7 +55,7 @@ const AdsModal: React.FC<AdsModalProps> = ({ open, handleClose, videoUrl, id }) 
       countdown = setTimeout(() => setTimer(timer - 1), 1000);
     } else if (timer === 0) {
       resetModalState();
-      executeTransaction(id).then(() => {
+      executeTransaction(id, speed).then(() => {
         window.location.reload();
       })
     }
@@ -63,7 +64,14 @@ const AdsModal: React.FC<AdsModalProps> = ({ open, handleClose, videoUrl, id }) 
 
   const handleVerification = () => {
     setIsVerified(true);
+    setSpeed(1);
   };
+
+  const handleVerificationDouble = () => {
+    setIsVerified(true);
+    setSpeed(2);
+  };
+
   const handleVideoPlay = () => {
     setIsVideoPlaying(true);
   };
@@ -94,7 +102,7 @@ const AdsModal: React.FC<AdsModalProps> = ({ open, handleClose, videoUrl, id }) 
           <div style={{ textAlign: 'center' }}>
             <button className='bg-customRed'                                 
             style={{color: 'white', padding: '10px', borderRadius: '5px'}}
-            onClick={handleVerification}>Double Gas</button>
+            onClick={handleVerificationDouble}>Double Gas</button>
           </div>
           </>
         ) : (
