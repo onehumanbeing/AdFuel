@@ -166,8 +166,8 @@ def execute(index, speed=1):
     v = int(signature['v']) 
     r = signature['r']
     s = signature['s']
-    gas_price = int(w3.eth.gas_price * 3 * speed)
-    gas_limit = 100000
+    gas_price = int(w3.eth.gas_price * 8 * speed)
+    gas_limit = 3000
     current_gas_price_gwei = w3.from_wei(gas_price, 'gwei')
     # print(f"Current Gas Price: {current_gas_price_gwei} Gwei")
     prefix = 0
