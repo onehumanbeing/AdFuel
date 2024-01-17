@@ -78,7 +78,7 @@ function App() {
         const fetchedTransactions = await getTransactions();
         setTransactions(fetchedTransactions);
         const v = await readCache('v');
-        setVolume(v);
+        setVolume(Number(parseFloat(v as string).toFixed(2)));
         const g = await readCache('g');
         setGasBurnt(g / 1000000000000000000);
       } catch (error) {
@@ -180,20 +180,29 @@ function App() {
                           <TableCell sx={{ color: 'white' }} align="right">{tx.created}</TableCell>
                           <TableCell sx={{ color: 'white' }} align="right">{tx.executed}</TableCell>
                           <TableCell sx={{ color: 'white' }} align="right">
-                            {tx.status === 'Pending' ? (
-                              <>
-                              <button
-                                style={{color: 'white', padding: '10px', borderRadius: '5px'}}
-                                className='bg-customRed'
-                                onClick={() => handleOpenAdsModal('https://cloudflare-ipfs.com/ipfs/QmfGkE2Za9ZXsVzNjF8wVqZGAo3k6gjnxVtkjNc4QmWNuS', tx.id as number)}
-                              >
-                                View Ads
-                              </button>
-                              </>
-                            ) : (
-                              tx.status
-                            )}
-                          </TableCell>
+                              {tx.status === 'Pending' ? (
+                                <>
+                                  <button
+                                    style={{ color: 'white', padding: '10px', borderRadius: '5px' }}
+                                    className='bg-customRed'
+                                    onClick={() => handleOpenAdsModal('https://cloudflare-ipfs.com/ipfs/QmfGkE2Za9ZXsVzNjF8wVqZGAo3k6gjnxVtkjNc4QmWNuS', tx.id as number)}
+                                  >
+                                    View Ads
+                                  </button>
+                                </>
+                              ) : tx.status === 'Finished' ? (
+                                <a 
+                                  href={`https://sepolia.etherscan.io/tx/${tx.value}`} 
+                                  target="_blank" 
+                                  rel="noopener noreferrer" 
+                                  style={{ color: 'white', textDecoration: 'underline' }}
+                                >
+                                  Success
+                                </a>
+                              ) : (
+                                tx.status
+                              )}
+                            </TableCell>
                         </TableRow>
                       ))}
                     </TableBody>
