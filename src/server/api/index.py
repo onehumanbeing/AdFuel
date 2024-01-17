@@ -36,6 +36,19 @@ def json_list(query):
         query
     ))
 
+def update_txn_value(txn_id, new_value):
+    try:
+        txn = Txns.get_by_id(txn_id)        
+        txn.value = new_value
+        txn.save()
+        return True
+    except DoesNotExist:
+        print(f"Transaction with ID {txn_id} does not exist.")
+        return False
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return False
+
 @app.route('/create_txn', methods=['POST'])
 def create_txn():
     try:
@@ -143,7 +156,7 @@ def execute(index):
     parse_transaction_receipt(r, gas_price)
     print("tx_transfer_hash", tx_transfer_hash_hex)
     add_volume(value / 1000000000000000000.0)
-    
+    update_txn_value(index, tx_transfer_hash_hex)
 
 def main():
     db.connect()

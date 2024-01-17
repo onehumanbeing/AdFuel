@@ -24,6 +24,32 @@ export type TransactionRequest = {
 // API base URL
 const API_URL = 'https://ad-fuel.vercel.app';
 
+export const executeTransaction = async (id: number): Promise<void> => {
+  try {
+      const response = await fetch(`${API_URL}/execute?id=${id}`);
+      if (!response.ok) {
+          throw new Error('Network response was not ok');
+      }
+      // Handle response here if needed
+  } catch (error) {
+      console.error('Error executing transaction:', error);
+  }
+}
+
+export async function readCache(key: string): Promise<any> {
+  try {
+      const response = await fetch(`${API_URL}/get?k=${key}`);
+      if (!response.ok) {
+          throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+      return data.value;
+  } catch (error) {
+      console.error('Error reading cache:', error);
+      return null;
+  }
+}
+
 export const createTransaction = async (TransactionRequestData: TransactionRequest): Promise<TransactionRequest> => {
   try {
     const response = await fetch(`${API_URL}/create_txn`, {

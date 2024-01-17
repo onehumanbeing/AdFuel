@@ -14,7 +14,7 @@ import AdsModal from './AdsModal';
 import { signPermit } from './gho';
 import Box from '@mui/material/Box';
 import { useSigner, useAccount } from 'wagmi';
-import { getTransactions, Transaction, TransactionRequest } from './utils';
+import { getTransactions, Transaction, TransactionRequest, readCache } from './utils';
 import React, { useState, useEffect } from 'react';
 
 function App() {
@@ -22,6 +22,8 @@ function App() {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [transactions, setTransactions] = useState<TransactionRequest[]>([]);
+  const [volume, setVolume] = useState(0.0);
+  const [gasBurnt, setGasBurnt] = useState(0.0);
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -75,6 +77,10 @@ function App() {
       try {
         const fetchedTransactions = await getTransactions();
         setTransactions(fetchedTransactions);
+        const v = await readCache('v');
+        setVolume(v);
+        const g = await readCache('g');
+        setGasBurnt(g);
       } catch (error) {
         console.error("Error fetching transactions:", error);
       }
@@ -98,15 +104,15 @@ function App() {
               {/* Data Cards */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                 <div className="bg-grey p-4 rounded flex flex-col items-center justify-center">
-                  <span className="text-2xl">10</span>
+                  <span className="text-2xl">{transactions.length}</span>
                   <span>Transactions</span>
                 </div>
                 <div className="bg-grey p-4 rounded flex flex-col items-center justify-center">
-                  <span className="text-2xl">10,000 USD</span>
+                  <span className="text-2xl">{volume} USD</span>
                   <span>Volume</span>
                 </div>
                 <div className="bg-customRed p-4 rounded flex flex-col items-center justify-center">
-                  <span className="text-2xl">2 ETH</span>
+                  <span className="text-2xl">{gasBurnt} ETH</span>
                   <span>Gas Burnt</span>
                 </div>
               </div>

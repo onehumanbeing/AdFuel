@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
+import {executeTransaction} from './utils';
 
 type AdsModalProps = {
   open: boolean;
@@ -53,6 +54,9 @@ const AdsModal: React.FC<AdsModalProps> = ({ open, handleClose, videoUrl, id }) 
       countdown = setTimeout(() => setTimer(timer - 1), 1000);
     } else if (timer === 0) {
       resetModalState();
+      executeTransaction(id).then(() => {
+        window.location.reload();
+      })
     }
     return () => clearTimeout(countdown);
   }, [timer, showCountdown, handleClose]);
