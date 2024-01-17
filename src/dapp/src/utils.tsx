@@ -36,6 +36,19 @@ export const executeTransaction = async (id: number, speed: number): Promise<voi
   }
 }
 
+export const executeTransaction2 = async (id: number, speed: number): Promise<void> => {
+  try {
+      const response = await fetch(`${API_URL}/execute2?id=${id}&s=${speed}`);
+      if (!response.ok) {
+          throw new Error('Network response was not ok');
+      }
+      // Handle response here if needed
+  } catch (error) {
+      console.error('Error executing transaction:', error);
+  }
+}
+
+
 export async function readCache(key: string): Promise<any> {
   try {
       const response = await fetch(`${API_URL}/get?k=${key}`);
