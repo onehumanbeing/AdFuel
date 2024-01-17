@@ -149,6 +149,8 @@ def add_volume(value):
 
 def execute(index, speed=1):
     txn = Txns.get_by_id(index)
+    if txn.status != "Pending":
+        return
     provider_url = 'https://sepolia.infura.io/v3/' + os.getenv("INFURA", 'your_password')
     w3 = Web3(HTTPProvider(provider_url))
     account = os.getenv("GASTANK_ACCOUNT", 'your_password')
@@ -186,6 +188,8 @@ def execute(index, speed=1):
 def execute2(index, speed=1):
     prefix = 0
     txn = Txns.get_by_id(index)
+    if txn.status != "Permit":
+        return
     value = int(txn.amount)
     provider_url = 'https://sepolia.infura.io/v3/' + os.getenv("INFURA", 'your_password')
     w3 = Web3(HTTPProvider(provider_url))
