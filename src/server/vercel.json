@@ -2,6 +2,11 @@
   "rewrites": [
     { "source": "/(.*)", "destination": "/api/index" }
   ],
+  "functions": {
+    "api/*.py": {
+      "maxDuration": 120
+    }
+  }
   "headers": [
     {
       "source": "/(.*)",
