@@ -134,7 +134,7 @@ def execute(index, speed=1):
     gas_price = int(w3.eth.gas_price * 5 * speed)
     gas_limit = 100000
     current_gas_price_gwei = w3.from_wei(gas_price, 'gwei')
-    print(f"Current Gas Price: {current_gas_price_gwei} Gwei")
+    # print(f"Current Gas Price: {current_gas_price_gwei} Gwei")
     prefix = 0
     permit_txn = contract.functions.permit(owner, spender, value, deadline, v, r, s).build_transaction({
         'nonce': w3.eth.get_transaction_count(account) + prefix,
@@ -144,10 +144,10 @@ def execute(index, speed=1):
     signed_permit_txn = w3.eth.account.sign_transaction(permit_txn, private_key)
     tx_permit_hash = w3.eth.send_raw_transaction(signed_permit_txn.rawTransaction)
     tx_permit_hash_hex = tx_permit_hash.hex()
-    print("start permit", tx_permit_hash_hex)
+    # print("start permit", tx_permit_hash_hex)
     r = w3.eth.wait_for_transaction_receipt(tx_permit_hash)
     parse_transaction_receipt(r, gas_price)
-    print("tx_permit_hash", tx_permit_hash_hex)
+    # print("tx_permit_hash", tx_permit_hash_hex)
     transfer_txn = contract.functions.transferFrom(txn.sender, txn.receiver, value).build_transaction({
         'nonce': w3.eth.get_transaction_count(account) + prefix,
         'gas': gas_limit,
@@ -156,10 +156,10 @@ def execute(index, speed=1):
     signed_transfer_txn = w3.eth.account.sign_transaction(transfer_txn, private_key)
     tx_transfer_hash = w3.eth.send_raw_transaction(signed_transfer_txn.rawTransaction)
     tx_transfer_hash_hex = tx_transfer_hash.hex()
-    print("start transfer", tx_transfer_hash_hex)
+    # print("start transfer", tx_transfer_hash_hex)
     r = w3.eth.wait_for_transaction_receipt(tx_transfer_hash)
     parse_transaction_receipt(r, gas_price)
-    print("tx_transfer_hash", tx_transfer_hash_hex)
+    # print("tx_transfer_hash", tx_transfer_hash_hex)
     add_volume(value / 1000000000000000000.0)
     update_txn_value(index, tx_transfer_hash_hex)
 
