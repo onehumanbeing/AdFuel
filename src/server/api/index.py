@@ -8,8 +8,10 @@ from web3 import Web3, HTTPProvider
 from eth_account.messages import encode_defunct
 import bip44
 from eth_account import Account
+from vercel_kv import KV, Opts
 
 app = Flask(__name__)
+CACHE = KV()
 
 db = MySQLDatabase('sql10677283', user='sql10677283', password=os.getenv("MYSQL_PASSWD", 'your_password'), host='sql10.freemysqlhosting.net', port=3306)
 
@@ -51,8 +53,48 @@ def get_txns():
     except Exception as e:
         return jsonify({'error': str(e)}), 400
     
-def parse_transaction_receipt():
-    pass
+@app.route('/execute', methods=['GET'])
+def execute():
+    try:
+        index = request.args.get('id')
+        execute(index)
+        return jsonify({'status': 0}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+    
+@app.route('/get', methods=['GET'])
+def read_cache():
+    try:
+        k = request.args.get('k')
+        if k == 'v':
+            k = 'AFvolume'
+        if k == 'g':
+            k = 'AFgasPrice'
+        return jsonify({'value': CACHE.get(key=k)}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+
+def parse_transaction_receipt(recipt, gas_price):
+    gas_used = recipt['gasUsed']
+    total_cost_wei = gas_used * gas_price
+    old_total_cost_wei = CACHE.get(key='AFgasPrice')
+    if old_total_cost_wei is None:
+        old_total_cost_wei = 0
+    else:
+        old_total_cost_wei = int(old_total_cost_wei)
+    total_cost_wei += old_total_cost_wei
+    CACHE.set(key='AFgasPrice', value=total_cost_wei)
+
+def add_volume(value):
+    price = 13.25
+    addition = price * value
+    volume = CACHE.get(key='AFvolume')
+    if volume is None:
+        volume = 0
+    else:
+        volume = float(volume)
+    addition += volume
+    CACHE.set(key='AFvolume', value=addition)
 
 def execute(index):
     txn = Txns.get_by_id(index)
@@ -85,7 +127,8 @@ def execute(index):
     tx_permit_hash = w3.eth.send_raw_transaction(signed_permit_txn.rawTransaction)
     tx_permit_hash_hex = tx_permit_hash.hex()
     print("start permit", tx_permit_hash_hex)
-    print(w3.eth.wait_for_transaction_receipt(tx_permit_hash))
+    r = w3.eth.wait_for_transaction_receipt(tx_permit_hash)
+    parse_transaction_receipt(r, gas_price)
     print("tx_permit_hash", tx_permit_hash_hex)
     transfer_txn = contract.functions.transferFrom(txn.sender, txn.receiver, value).build_transaction({
         'nonce': w3.eth.get_transaction_count(account) + prefix,
@@ -96,8 +139,10 @@ def execute(index):
     tx_transfer_hash = w3.eth.send_raw_transaction(signed_transfer_txn.rawTransaction)
     tx_transfer_hash_hex = tx_transfer_hash.hex()
     print("start transfer", tx_transfer_hash_hex)
-    print(w3.eth.wait_for_transaction_receipt(tx_transfer_hash))
+    r = w3.eth.wait_for_transaction_receipt(tx_transfer_hash)
+    parse_transaction_receipt(r, gas_price)
     print("tx_transfer_hash", tx_transfer_hash_hex)
+    add_volume(value / 1000000000000000000.0)
     
 
 def main():
