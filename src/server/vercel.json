@@ -6,7 +6,7 @@
     "api/*.py": {
       "maxDuration": 120
     }
-  }
+  },
   "headers": [
     {
       "source": "/(.*)",
