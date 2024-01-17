@@ -74,8 +74,10 @@ def execute():
     try:
         index = request.args.get('id')
         s = request.args.get('s')
-        if s is not None and s > 1:
+        if s is not None and int(s) > 1:
             s = 2
+        else:
+            s = 1
         execute(index, s)
         return jsonify({'status': 0}), 200
     except Exception as e:
