@@ -40,6 +40,8 @@ def update_txn_value(txn_id, new_value):
     try:
         txn = Txns.get_by_id(txn_id)        
         txn.value = new_value
+        txn.status = 'Finished'
+        txn.executed = datetime.datetime.now()
         txn.save()
         return True
     except DoesNotExist:
