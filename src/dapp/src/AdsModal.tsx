@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
 import {executeTransaction, executeTransaction2} from './utils';
+import { Turnstile } from '@marsidev/react-turnstile'
 
 type AdsModalProps = {
   open: boolean;
@@ -96,6 +97,7 @@ const AdsModal: React.FC<AdsModalProps> = ({ open, handleClose, videoUrl, id }) 
         <h2 style={{ textAlign: 'center', fontSize: '24px' }} className='mb-4'>View Ads</h2>
         {!isVerified ? (
           <>
+          <Turnstile className='mb-4' siteKey='0x4AAAAAAAQOibHgLITTAGU8' />
           <div style={{ textAlign: 'center' }}>
             <button className='bg-darkEnd mb-4'                                 
             style={{color: 'white', padding: '10px', borderRadius: '5px'}}

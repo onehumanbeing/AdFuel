@@ -169,9 +169,17 @@ function App() {
                           sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                         >
                           <TableCell  sx={{ color: 'white' }} component="th" scope="row">
-                            {tx.sender}
+                            {tx.sender} {tx.sender === address? (
+                              <>(me)</>
+                            ): (
+                              <></>
+                            )}
                           </TableCell>
-                          <TableCell sx={{ color: 'white' }} align="right">{tx.receiver}</TableCell>
+                          <TableCell sx={{ color: 'white' }} align="right">{tx.receiver} {tx.receiver === address? (
+                              <>(me)</>
+                            ): (
+                              <></>
+                            )}</TableCell>
                           <TableCell sx={{ color: 'white' }} align="right">
                               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end'  }}>
                                     <img 
@@ -187,13 +195,18 @@ function App() {
                           <TableCell sx={{ color: 'white' }} align="right">
                               {tx.status === 'Pending' ? (
                                 <>
-                                  <button
-                                    style={{ color: 'white', padding: '10px', borderRadius: '5px' }}
-                                    className='bg-customRed'
-                                    onClick={() => handleOpenAdsModal('https://cloudflare-ipfs.com/ipfs/QmfGkE2Za9ZXsVzNjF8wVqZGAo3k6gjnxVtkjNc4QmWNuS', tx.id as number)}
-                                  >
-                                    View Ads
-                                  </button>
+                                   {tx.sender === address? (
+                                      <button
+                                      style={{ color: 'white', padding: '10px', borderRadius: '5px' }}
+                                      className='bg-customRed'
+                                      onClick={() => handleOpenAdsModal('https://cloudflare-ipfs.com/ipfs/QmfGkE2Za9ZXsVzNjF8wVqZGAo3k6gjnxVtkjNc4QmWNuS', tx.id as number)}
+                                    >
+                                      View Ads
+                                    </button>
+                                    ): (
+                                      <>{tx.status}</>
+                                    )}
+                                  
                                 </>
                               ) : tx.status === 'Finished' ? (
                                 <a 
