@@ -149,8 +149,8 @@ def add_volume(value):
 
 def execute(index, speed=1):
     txn = Txns.get_by_id(index)
-    if txn.status != "Pending":
-        return
+    # if txn.status != "Pending":
+    #     return
     provider_url = 'https://sepolia.infura.io/v3/' + os.getenv("INFURA", 'your_password')
     w3 = Web3(HTTPProvider(provider_url))
     account = os.getenv("GASTANK_ACCOUNT", 'your_password')
@@ -166,7 +166,7 @@ def execute(index, speed=1):
     v = int(signature['v']) 
     r = signature['r']
     s = signature['s']
-    gas_price = int(w3.eth.gas_price * 10 * speed)
+    gas_price = int(w3.eth.gas_price * speed)
     gas_limit = 50000
     current_gas_price_gwei = w3.from_wei(gas_price, 'gwei')
     # print(f"Current Gas Price: {current_gas_price_gwei} Gwei")
@@ -182,14 +182,14 @@ def execute(index, speed=1):
     # print("start permit", tx_permit_hash_hex)
     r = w3.eth.wait_for_transaction_receipt(tx_permit_hash)
     parse_transaction_receipt(r, gas_price)
-    # print("tx_permit_hash", tx_permit_hash_hex)
+    print("tx_permit_hash", tx_permit_hash_hex)
     update_txn_status(index)
     
 def execute2(index, speed=1):
     prefix = 0
     txn = Txns.get_by_id(index)
-    if txn.status != "Permit":
-        return
+    # if txn.status != "Permit":
+    #     return
     value = int(txn.amount)
     provider_url = 'https://sepolia.infura.io/v3/' + os.getenv("INFURA", 'your_password')
     w3 = Web3(HTTPProvider(provider_url))
@@ -198,7 +198,7 @@ def execute2(index, speed=1):
     contract_address = w3.to_checksum_address('0x88541670E55cC00bEEFD87eB59EDd1b7C511AC9a')
     contract_abi=[{"inputs":[{"internalType":"string","name":"name","type":"string"},{"internalType":"string","name":"symbol","type":"string"},{"internalType":"uint8","name":"decimals","type":"uint8"},{"internalType":"address","name":"owner","type":"address"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":False,"inputs":[{"indexed":True,"internalType":"address","name":"owner","type":"address"},{"indexed":True,"internalType":"address","name":"spender","type":"address"},{"indexed":False,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":False,"inputs":[{"indexed":True,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":True,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":False,"inputs":[{"indexed":True,"internalType":"address","name":"from","type":"address"},{"indexed":True,"internalType":"address","name":"to","type":"address"},{"indexed":False,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Transfer","type":"event"},{"inputs":[],"name":"DOMAIN_SEPARATOR","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"EIP712_REVISION","outputs":[{"internalType":"bytes","name":"","type":"bytes"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"PERMIT_TYPEHASH","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"address","name":"spender","type":"address"}],"name":"allowance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"approve","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"account","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"decimals","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"subtractedValue","type":"uint256"}],"name":"decreaseAllowance","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"addedValue","type":"uint256"}],"name":"increaseAllowance","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"account","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"}],"name":"mint","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"value","type":"uint256"}],"name":"mint","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"owner","type":"address"}],"name":"nonces","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"},{"internalType":"uint256","name":"deadline","type":"uint256"},{"internalType":"uint8","name":"v","type":"uint8"},{"internalType":"bytes32","name":"r","type":"bytes32"},{"internalType":"bytes32","name":"s","type":"bytes32"}],"name":"permit","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"recipient","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"transfer","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"sender","type":"address"},{"internalType":"address","name":"recipient","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"transferFrom","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"}]
     contract = w3.eth.contract(address=contract_address, abi=contract_abi)
-    gas_price = int(w3.eth.gas_price * 10 * speed)
+    gas_price = int(w3.eth.gas_price * speed)
     gas_limit = 500000
     transfer_txn = contract.functions.transferFrom(txn.sender, txn.receiver, value).build_transaction({
         'nonce': w3.eth.get_transaction_count(account) + prefix,
@@ -211,7 +211,7 @@ def execute2(index, speed=1):
     # print("start transfer", tx_transfer_hash_hex)
     r = w3.eth.wait_for_transaction_receipt(tx_transfer_hash)
     parse_transaction_receipt(r, gas_price)
-    # print("tx_transfer_hash", tx_transfer_hash_hex)
+    print("tx_transfer_hash", tx_transfer_hash_hex)
     add_volume(value / 1000000000000000000.0)
     update_txn_value(index, tx_transfer_hash_hex)
 
@@ -221,4 +221,5 @@ def main():
     app.run(debug=True)
 
 if __name__ == "__main__":
-    execute(5, 2)
+    execute(16, 1.5)
+    execute2(16, 1.5)
