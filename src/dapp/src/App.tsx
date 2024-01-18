@@ -199,7 +199,7 @@ function App() {
                                       <button
                                       style={{ color: 'white', padding: '10px', borderRadius: '5px' }}
                                       className='bg-customRed'
-                                      onClick={() => handleOpenAdsModal('https://cloudflare-ipfs.com/ipfs/QmfGkE2Za9ZXsVzNjF8wVqZGAo3k6gjnxVtkjNc4QmWNuS', tx.id as number)}
+                                      onClick={() => handleOpenAdsModal('ads.mov', tx.id as number)}
                                     >
                                       View Ads
                                     </button>
