@@ -81,7 +81,15 @@ function App() {
     const fetchTransactions = async () => {
       try {
         const fetchedTransactions = await getTransactions();
-        setTransactions(fetchedTransactions);
+        let filteredTransactions = fetchedTransactions;
+        
+        if (filter === 'Me') {
+          filteredTransactions = fetchedTransactions.filter(tx => 
+            tx.sender === address
+          );
+        }
+  
+        setTransactions(filteredTransactions);
         const v = await readCache('v');
         setVolume(Number(parseFloat(v as string).toFixed(2)));
         const g = await readCache('g');
@@ -90,9 +98,9 @@ function App() {
         console.error("Error fetching transactions:", error);
       }
     };
-
+  
     fetchTransactions();
-  }, []);
+  }, [address, filter]); 
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-r from-darkStart to-darkEnd text-white">
