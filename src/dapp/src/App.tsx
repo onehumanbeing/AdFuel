@@ -14,7 +14,7 @@ import AdsModal from './AdsModal';
 import { signPermit } from './gho';
 import Box from '@mui/material/Box';
 import { useSigner, useAccount } from 'wagmi';
-import { getTransactions, Transaction, TransactionRequest, readCache, executeTransaction2 } from './utils';
+import { getTransactions, Transaction, TransactionRequest, readCache, executeTransaction2, executePending } from './utils';
 import React, { useState, useEffect } from 'react';
 
 function App() {
@@ -48,6 +48,13 @@ function App() {
 
   const handlePermit = (id: number) => {
     executeTransaction2(id, 2).then(() => {
+      window.location.reload();
+    })
+  }
+
+  const handleTest = (id: number) => {
+    executePending(id)
+    .then(() => {
       window.location.reload();
     })
   }
@@ -199,7 +206,7 @@ function App() {
                                 </Box>
                           </TableCell>
                           <TableCell sx={{ color: 'white' }} align="right">{tx.created}</TableCell>
-                          <TableCell sx={{ color: 'white' }} align="right">{tx.executed}</TableCell>
+                          <TableCell sx={{ color: 'white' }} align="right" onClick={() => handleTest(tx.id as number)}>{tx.executed}</TableCell>
                           <TableCell sx={{ color: 'white' }} align="right">
                               {tx.status === 'Pending' ? (
                                 <>
