@@ -190,7 +190,7 @@ def execute(index, speed=1, test=None):
     # if txn.status != "Pending":
     #     return
     gas_price = int(w3.eth.gas_price * speed)
-    if test is not None:
+    if test is None:
         provider_url = 'https://sepolia.infura.io/v3/' + os.getenv("INFURA", 'your_password')
         w3 = Web3(HTTPProvider(provider_url))
         account = os.getenv("GASTANK_ACCOUNT", 'your_password')
@@ -232,7 +232,7 @@ def execute2(index, speed=1, test=None):
     # if txn.status != "Permit":
     #     return
     value = int(txn.amount)
-    if test is not None:
+    if test is None:
         provider_url = 'https://sepolia.infura.io/v3/' + os.getenv("INFURA", 'your_password')
         w3 = Web3(HTTPProvider(provider_url))
         account = os.getenv("GASTANK_ACCOUNT", 'your_password')
